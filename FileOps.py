@@ -1,4 +1,4 @@
-import json
+import json,zipfile,os
 
 
 class File:
@@ -51,13 +51,25 @@ class File:
         file.close()
         print "Config Created"
 
+    def archive_site(self):
+        file_path = ""
+        compression = ""
+        root_dir = os.getcwd()
+        ignore_list = ["site.zip"]
+        zf = zipfile.ZipFile(ignore_list[0], mode='w')
 
+        try:
+            import zlib
+            compression = zipfile.ZIP_DEFLATED
+        except:
+            compression = zipfile.ZIP_STORED
 
+        print ("Archiving the site...")
 
+        for dirName, subdirList, fileList in os.walk(root_dir):
+            for fname in fileList:
+                if fname not in ignore_list:
+                    file_path = os.path.join(dirName, fname)
+                    zf.write(file_path, os.path.relpath(file_path), compression)
 
-
-
-import os
-os.chdir("D:\\xampp\\htdocs\\wordpress")
-f = File()
-f.create_config()
+        zf.close()
