@@ -29,7 +29,7 @@ class File:
         old_config = self.fetch_old_config()
         new_config = {}
         print("Please input the following details or press enter to keep old values...")
-        print Style.BRIGHT
+        print (Style.BRIGHT)
         new_config['db_host'] = raw_input("Remote Host Name (Old Value:'" + old_config['DB_HOST'] + "'): ")
         new_config['db_name'] = raw_input("Database Name (Old Value:'" + old_config['DB_NAME'] + "'): ")
         new_config['db_user'] = raw_input("DB User Name (Old Value:'" + old_config['DB_USER'] + "'): ")
@@ -37,7 +37,7 @@ class File:
         new_config['site_url'] = raw_input("Remote Site URL : ")
         new_config['ftp_user'] = raw_input("FTP Username : ")
         new_config['ftp_pass'] = raw_input("FTP Password : ")
-        print Style.RESET_ALL
+        print (Style.RESET_ALL)
 
         return old_config, new_config
 
@@ -64,7 +64,7 @@ class File:
             file = open("deploy-config.json", "w")
             file.write(json.dumps(new_config))
             file.close()
-            print "Config Created"
+            print ("Config Created")
             return 1
         else:
             return 0
