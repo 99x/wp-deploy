@@ -29,15 +29,15 @@ class File:
         old_config = self.fetch_old_config()
         new_config = {}
         print("Please input the following details or press enter to keep old values...")
-        print (Style.BRIGHT)
-        new_config['db_host'] = raw_input("Remote Host Name (Old Value:'" + old_config['DB_HOST'] + "'): ")
-        new_config['db_name'] = raw_input("Database Name (Old Value:'" + old_config['DB_NAME'] + "'): ")
-        new_config['db_user'] = raw_input("DB User Name (Old Value:'" + old_config['DB_USER'] + "'): ")
-        new_config['db_password'] = raw_input("DB Password (Old Value:'" + old_config['DB_PASSWORD'] + "'): ")
-        new_config['site_url'] = raw_input("Remote Site URL : ")
-        new_config['ftp_user'] = raw_input("FTP Username : ")
-        new_config['ftp_pass'] = raw_input("FTP Password : ")
-        print (Style.RESET_ALL)
+        print(Style.BRIGHT)
+        new_config['db_host'] = input("Remote Host Name (Old Value:'" + old_config['DB_HOST'] + "'): ")
+        new_config['db_name'] = input("Database Name (Old Value:'" + old_config['DB_NAME'] + "'): ")
+        new_config['db_user'] = input("DB User Name (Old Value:'" + old_config['DB_USER'] + "'): ")
+        new_config['db_password'] = input("DB Password (Old Value:'" + old_config['DB_PASSWORD'] + "'): ")
+        new_config['site_url'] = input("Remote Site URL : ")
+        new_config['ftp_user'] = input("FTP Username : ")
+        new_config['ftp_pass'] = input("FTP Password : ")
+        print(Style.RESET_ALL)
 
         return old_config, new_config
 
@@ -55,8 +55,8 @@ class File:
                     new_config[key] = old_config[key.upper()]  # getting values from old configs
                     is_completed = 1
                 except:
-                    print Fore.RED + Back.WHITE + "\n" + strings[
-                        key] + " is missing to continue the process. Please re-enter them\n" + Fore.RESET + Back.RESET
+                    print(Fore.RED + Back.WHITE + "\n" + strings[
+                        key] + " is missing to continue the process. Please re-enter them\n" + Fore.RESET + Back.RESET)
 
                     is_completed = 0
                     break
@@ -64,7 +64,7 @@ class File:
             file = open("deploy-config.json", "w")
             file.write(json.dumps(new_config))
             file.close()
-            print ("Config Created")
+            print("Config Created")
             return 1
         else:
             return 0
@@ -82,7 +82,7 @@ class File:
         except:
             compression = zipfile.ZIP_STORED
 
-        print ("Archiving the site...")
+        print("Archiving the site...")
 
         for dirName, subdirList, fileList in os.walk(root_dir):
             for fname in fileList:
