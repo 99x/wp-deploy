@@ -2,6 +2,7 @@ import json
 import zipfile
 import os
 from colorama import *
+import tarfile
 
 
 class File:
@@ -72,7 +73,7 @@ class File:
         else:
             return 0
 
-    def archive_site(self):
+    def archive_site_zip(self):
         file_path = ""
         compression = ""
         root_dir = os.getcwd()
@@ -95,3 +96,9 @@ class File:
 
         zf.close()
 
+    def archive_site_tar(self):
+        root_dir = os.getcwd()+"/"
+        with tarfile.open("site.tar.gz", "w:gz") as tar:
+            print("Archiving the site...")
+            tar.add(root_dir, arcname=os.path.basename(root_dir))
+            tar.close()
