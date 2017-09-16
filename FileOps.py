@@ -13,14 +13,17 @@ class File:
         # Fetches old WP Configurations from wp-config.php
         configs = {}
         data = []
+        keys = ['DB_NAME', 'DB_USER', 'DB_PASSWORD', 'DB_HOST', 'table_prefix']
         filename = "wp-config.php"
         file = open(filename)
         for line in file:
             if "define" in line:
                 data = line.split("'")
-                configs[data[1]] = data[3]
-            if "NONCE_SALT" in line:
-                break
+                if data[1] in keys:
+                    configs[data[1]] = data[3]
+            elif "$" in line:
+                data = line[1:].split("  = ")
+                configs[data[0].upper()] = data[1][1:-3]
         file.close()
         return configs
 
@@ -49,7 +52,7 @@ class File:
                    "ftp_pass": "FTP Password"}
         is_completed = 0
         old_config, new_config = self.prompt_config()
-        for key, value in new_config.iteritems():
+        for key, value in new_config.items():
             if value == "":
                 try:
                     new_config[key] = old_config[key.upper()]  # getting values from old configs
@@ -91,3 +94,4 @@ class File:
                     zf.write(file_path, os.path.relpath(file_path), compression)
 
         zf.close()
+
