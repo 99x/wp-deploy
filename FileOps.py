@@ -163,6 +163,3 @@ class File:
 
         print("File Transfer to " + host + " Completed:)")
 
-os.chdir("D:\\wpdep\\")
-f = File()
-f.sftp_transfer("138.197.92.210", "root", "JIMMY+bird86","/var/www/html")
