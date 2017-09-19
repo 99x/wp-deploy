@@ -3,6 +3,11 @@ import zipfile
 import os
 from colorama import *
 import tarfile
+from tqdm import tqdm
+import ftplib
+import pysftp
+import warnings
+warnings.filterwarnings("ignore")
 
 
 class File:
@@ -102,3 +107,62 @@ class File:
             print("Archiving the site...")
             tar.add(root_dir, arcname=os.path.basename(root_dir))
             tar.close()
+
+    def ftp_transfer(self, host, username, password, remote_dir_path):
+        root_dir = os.getcwd()
+        ftp = ftplib.FTP(host, username, password)
+        print("Transferring Files to "+host)
+        for dirName, subdirList, fileList in os.walk(root_dir):
+            if os.path.isdir(os.path.relpath(dirName)):
+                try:
+                    ftp.mkd(os.path.join(remote_dir_path, os.path.relpath(dirName).replace("\\", "/")))
+                except:
+                    pass
+            for fname in fileList:
+                file_path = os.path.join(dirName, fname)
+                filesize = os.path.getsize(file_path)
+                file = open(file_path, 'rb')
+
+                with tqdm(unit='blocks', unit_scale=True, leave=False, miniters=1, desc=fname,
+                          total=filesize) as tqdm_instance:
+                    if os.path.isdir(os.path.relpath(dirName)):
+                        ftp.storbinary(
+                            'STOR ' + os.path.join(remote_dir_path, os.path.relpath(dirName), fname).replace("\\", "/"),
+                            file, 2048, callback=lambda sent: tqdm_instance.update(len(sent)))
+                    else:
+                        ftp.storbinary('STOR ' + os.path.join(remote_dir_path, fname), file, 2048,
+                                       callback=lambda sent: tqdm_instance.update(len(sent)))
+        print("File Transfer to "+host+" Completed:)")
+
+    def sftp_transfer(self, host, username, password, remote_dir_path):
+        cnopts = pysftp.CnOpts()
+        cnopts.hostkeys = None
+        srv = pysftp.Connection(host=host, username=username, password=password, cnopts=cnopts)
+        root_dir = os.getcwd()
+        print("Transferring files to "+host)
+        for dirName, subdirList, fileList in os.walk(root_dir):
+            if os.path.isdir(os.path.relpath(dirName)):
+                try:
+                    srv.mkdir(os.path.join(remote_dir_path, os.path.relpath(dirName).replace("\\", "/")))
+                except:
+                    pass
+
+            for fname in fileList:
+                file_path = os.path.join(dirName, fname)
+                filesize = os.path.getsize(file_path)
+
+                with tqdm(unit='blocks', unit_scale=True, leave=False, miniters=1, desc=fname,
+                          total=filesize) as tqdm_instance:
+                    if os.path.isdir(os.path.relpath(dirName)):
+                        srv.put(file_path,
+                                os.path.join(remote_dir_path, os.path.relpath(dirName), fname).replace("\\", "/"),
+                                callback=lambda sent, total: tqdm_instance.update(sent))
+                    else:
+                        srv.put(file_path, os.path.join(remote_dir_path, fname),
+                                callback=lambda sent, total: tqdm_instance.update(sent))
+
+        print("File Transfer to " + host + " Completed:)")
+
+os.chdir("D:\\wpdep\\")
+f = File()
+f.sftp_transfer("138.197.92.210", "root", "JIMMY+bird86","/var/www/html")
