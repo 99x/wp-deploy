@@ -46,6 +46,7 @@ class File:
         new_config['site_url'] = input("Remote Site URL : ")
         new_config['ftp_user'] = input("FTP Username : ")
         new_config['ftp_pass'] = input("FTP Password : ")
+        new_config['remote_dir_path'] = input("Enter Remote Directory path to transfer files : ")
         print(Style.RESET_ALL)
 
         return old_config, new_config
