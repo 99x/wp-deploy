@@ -79,6 +79,15 @@ class File:
         else:
             return 0
 
+    def read_config(self):
+        try:
+            file = open("deploy-config.json")
+            config = json.loads(file.readlines())
+            return config
+        except:
+            print("deploy-config.json not found, Please run wp_deploy init to create it.")
+            exit()
+
     def archive_site_zip(self):
         file_path = ""
         compression = ""
