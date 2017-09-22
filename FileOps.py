@@ -125,6 +125,7 @@ class File:
     def ftp_transfer(self, host, username, password, remote_dir_path):
         root_dir = os.getcwd()
         ftp = ftplib.FTP(host, username, password)
+        ignore_list = ['deploy-config.json']
         print("Transferring Files to "+host)
         for dirName, subdirList, fileList in os.walk(root_dir):
             if os.path.isdir(os.path.relpath(dirName)):
@@ -136,16 +137,16 @@ class File:
                 file_path = os.path.join(dirName, fname)
                 filesize = os.path.getsize(file_path)
                 file = open(file_path, 'rb')
-
-                with tqdm(unit='blocks', unit_scale=True, leave=False, miniters=1, desc=fname,
-                          total=filesize) as tqdm_instance:
-                    if os.path.isdir(os.path.relpath(dirName)):
-                        ftp.storbinary(
-                            'STOR ' + os.path.join(remote_dir_path, os.path.relpath(dirName), fname).replace("\\", "/"),
-                            file, 2048, callback=lambda sent: tqdm_instance.update(len(sent)))
-                    else:
-                        ftp.storbinary('STOR ' + os.path.join(remote_dir_path, fname), file, 2048,
-                                       callback=lambda sent: tqdm_instance.update(len(sent)))
+                if fname not in ignore_list:
+                    with tqdm(unit='blocks', unit_scale=True, leave=False, miniters=1, desc=fname,
+                              total=filesize) as tqdm_instance:
+                        if os.path.isdir(os.path.relpath(dirName)):
+                            ftp.storbinary(
+                                'STOR ' + os.path.join(remote_dir_path, os.path.relpath(dirName), fname).replace("\\", "/"),
+                                file, 2048, callback=lambda sent: tqdm_instance.update(len(sent)))
+                        else:
+                            ftp.storbinary('STOR ' + os.path.join(remote_dir_path, fname), file, 2048,
+                                           callback=lambda sent: tqdm_instance.update(len(sent)))
         print("File Transfer to "+host+" Completed:)")
 
     def sftp_transfer(self, host, username, password, remote_dir_path):
@@ -153,6 +154,7 @@ class File:
         cnopts.hostkeys = None
         srv = pysftp.Connection(host=host, username=username, password=password, cnopts=cnopts)
         root_dir = os.getcwd()
+        ignore_list = ['deploy-config.json']
         print("Transferring files to "+host)
         for dirName, subdirList, fileList in os.walk(root_dir):
             if os.path.isdir(os.path.relpath(dirName)):
@@ -164,16 +166,16 @@ class File:
             for fname in fileList:
                 file_path = os.path.join(dirName, fname)
                 filesize = os.path.getsize(file_path)
-
-                with tqdm(unit='blocks', unit_scale=True, leave=False, miniters=1, desc=fname,
-                          total=filesize) as tqdm_instance:
-                    if os.path.isdir(os.path.relpath(dirName)):
-                        srv.put(file_path,
-                                os.path.join(remote_dir_path, os.path.relpath(dirName), fname).replace("\\", "/"),
-                                callback=lambda sent, total: tqdm_instance.update(sent))
-                    else:
-                        srv.put(file_path, os.path.join(remote_dir_path, fname),
-                                callback=lambda sent, total: tqdm_instance.update(sent))
+                if fname not in ignore_list:
+                    with tqdm(unit='blocks', unit_scale=True, leave=False, miniters=1, desc=fname,
+                              total=filesize) as tqdm_instance:
+                        if os.path.isdir(os.path.relpath(dirName)):
+                            srv.put(file_path,
+                                    os.path.join(remote_dir_path, os.path.relpath(dirName), fname).replace("\\", "/"),
+                                    callback=lambda sent, total: tqdm_instance.update(sent))
+                        else:
+                            srv.put(file_path, os.path.join(remote_dir_path, fname),
+                                    callback=lambda sent, total: tqdm_instance.update(sent))
 
         print("File Transfer to " + host + " Completed:)")
 
