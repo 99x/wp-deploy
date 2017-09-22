@@ -37,6 +37,7 @@ class Database:
             exec_code = "mysql -u " + username + " -p" + password + " " + database + "_wp_deploy_backup < " + self.backup_file_local
 
         os.system(exec_code)
+        os.remove(self.backup_file_local)
 
     def change_rows(self, host, username, password, database, table_prefix, localhost_url,site_url):
         database = database+"_wp_deploy_backup"
