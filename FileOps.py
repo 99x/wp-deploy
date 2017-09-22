@@ -39,13 +39,17 @@ class File:
         new_config = {}
         print("Please input the following details or press enter to keep old values...")
         print(Style.BRIGHT)
-        new_config['db_host'] = input("Remote Host Name (Old Value:'" + old_config['DB_HOST'] + "'): ")
-        new_config['db_name'] = input("Database Name (Old Value:'" + old_config['DB_NAME'] + "'): ")
-        new_config['db_user'] = input("DB User Name (Old Value:'" + old_config['DB_USER'] + "'): ")
-        new_config['db_password'] = input("DB Password (Old Value:'" + old_config['DB_PASSWORD'] + "'): ")
+        new_config['db_host'] = input("Local Host Name (Old Value:'" + old_config['DB_HOST'] + "'): ")
+        new_config['db_name'] = input("Local Database Name (Old Value:'" + old_config['DB_NAME'] + "'): ")
+        new_config['db_user'] = input("Local DB User Name (Old Value:'" + old_config['DB_USER'] + "'): ")
+        new_config['db_password'] = input("Local DB Password (Old Value:'" + old_config['DB_PASSWORD'] + "'): ")
+        new_config['remote_db_host'] = input("Remote DB Host Name : ")
+        new_config['remote_db_user'] = input("Remote DB User Name : ")
+        new_config['remote_db_password'] = input("Remote DB Password : ")
         new_config['site_url'] = input("Remote Site URL : ")
         new_config['ftp_user'] = input("FTP Username : ")
         new_config['ftp_pass'] = input("FTP Password : ")
+        new_config['remote_dir_path'] = input("Remote Directory path to transfer files : ")
         print(Style.RESET_ALL)
 
         return old_config, new_config
