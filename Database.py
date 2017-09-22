@@ -43,6 +43,7 @@ class Database:
         database = database+"_wp_deploy_backup"
         con = mdb.connect(host, username, password, database)
         cur = con.cursor()
+        print("Updating DB Rows for Migration... ")
         # Update site_url and home in _options table
         table_name = table_prefix+"options"
         cur.execute("UPDATE "+table_name+" SET option_value=%s WHERE option_name=%s", (site_url, "siteurl"))
@@ -70,6 +71,7 @@ class Database:
         if int(os.stat(self.backup_file).st_size) > 0:
             print("Database Backup Created :)")
 
+
     def restorebackup(self, sshhostname, sshuser, sshpassword, dbuser, dbpass, dbname, filepath="/var/www/html/"):
         backup_file_path = filepath+self.backup_file
         ssh = paramiko.SSHClient()
@@ -82,7 +84,7 @@ class Database:
             print("Database Restored")
         else:
             print("Restoring Database '" + dbname + "'")
-            stdin, stdout, stderr = ssh.exec_command("mysqladmin -u "+dbuser+" -p"+dbpass+"create "+dbname)
+            stdin, stdout, stderr = ssh.exec_command("mysqladmin -u "+dbuser+" -p"+dbpass+" create "+dbname)
             stdin, stdout, stderr = ssh.exec_command("mysql -u " + dbuser + " -p"+dbpass+" "+dbname+"  < "+backup_file_path)
             print("Database Restored")
         ssh.close()
