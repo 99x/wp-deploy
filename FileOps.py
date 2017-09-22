@@ -50,6 +50,7 @@ class File:
         new_config['ftp_user'] = input("FTP Username : ")
         new_config['ftp_pass'] = input("FTP Password : ")
         new_config['remote_dir_path'] = input("Remote Directory path to transfer files : ")
+        new_config['table_prefix'] = old_config['TABLE_PREFIX']
         print(Style.RESET_ALL)
 
         return old_config, new_config
@@ -57,9 +58,11 @@ class File:
     def create_config(self):
         # Creates deploy-config.json file to use in deployment stage
         # Returns 1 if config created successfully ELSE 0
-        strings = {'db_host': 'Remote Host Name', 'db_name': "Database Name", 'db_user': "Database User Name",
-                   'db_password': "Database Password", 'site_url': "Remote Site URL", "ftp_user": "FTP User name",
-                   "ftp_pass": "FTP Password"}
+        strings = {'db_host': 'Local Host Name', 'db_name': "Database Name", 'db_user': "Database User Name",
+                   'db_password': "Database Password", 'remote_db_host': "Remote DB Host Name",
+                   'remote_db_user': "Remote DB User Name", 'remote_db_password': "Remote DB Password",
+                   'site_url': "Remote Site URL", "ftp_user": "FTP User name", "ftp_pass": "FTP Password",
+                   'remote_dir_path': "Remote Directory path"}
         is_completed = 0
         old_config, new_config = self.prompt_config()
         for key, value in new_config.items():
