@@ -7,6 +7,7 @@ from tqdm import tqdm
 import ftplib
 import pysftp
 import getpass
+import paramiko
 import warnings
 warnings.filterwarnings("ignore")
 
@@ -155,15 +156,17 @@ class File:
         cnopts = pysftp.CnOpts()
         cnopts.hostkeys = None
         srv = pysftp.Connection(host=host, username=username, password=password, cnopts=cnopts)
+        ssh = paramiko.SSHClient()
+        ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        ssh.connect(host, username=username, password=password)
+
         root_dir = os.getcwd()
         ignore_list = ['deploy-config.json']
         print("Transferring files to "+host)
         for dirName, subdirList, fileList in os.walk(root_dir):
             if os.path.isdir(os.path.relpath(dirName)):
-                try:
-                    srv.mkdir(os.path.join(remote_dir_path, os.path.relpath(dirName).replace("\\", "/")))
-                except:
-                    pass
+                exec_code = "mkdir "+remote_dir_path+"/"+os.path.relpath(dirName)
+                stdin, stdout, stderr = ssh.exec_command(exec_code)
 
             for fname in fileList:
                 file_path = os.path.join(dirName, fname)
