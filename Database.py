@@ -87,5 +87,6 @@ class Database:
             stdin, stdout, stderr = ssh.exec_command("mysqladmin -u "+dbuser+" -p"+dbpass+" create "+dbname)
             stdin, stdout, stderr = ssh.exec_command("mysql -u " + dbuser + " -p"+dbpass+" "+dbname+"  < "+backup_file_path)
             print("Database Restored")
+        stdin, stdout, stderr = ssh.exec_command("rm "+backup_file_path)
         ssh.close()
 
