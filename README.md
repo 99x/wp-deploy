@@ -63,7 +63,10 @@ the features and reduce bugs. If you'd like to contribute, the steps are as foll
 Happy Contributing :)
 
 ## Acknowledgement
-I would like to thank @rehrumesh ,@thinkholic @lakindu95 for metoring me and guiding me through this
+I would like to thank [@rehrumesh](https://github.com/rehrumesh),[@thinkholic](https://github.com/thinkholic) and [@lakindu95](https://github.com/lakindu95) for metoring me and guiding me through this
 two weeks to create this awesome tool which was initiated through **Hacktitude** by Dotitude, 99x
 Technology.
 
+## License
+
+MIT © [99X Technology](https://github.com/99xt)
