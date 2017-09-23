@@ -7,6 +7,7 @@ definitely make it easier for you to deploy your local site into a remote server
 ![](header.png)
 
 ## Requirements
+* **Python 3.0 or higher**
 * **Operating Systems:** Windows, Linux or OSX
 * **PATH Variables:** mysql path variables should be set
 * **Supported Hosts:** Any server with SSH and FTP Access 
@@ -23,14 +24,22 @@ $ pip3 install -r requirements.txt
 
 2. Create deploy-config.json file
 ```
-wp_deploy init
+python3 wp_deploy.py init
 ```
+
 
 3. Create database backups and deploy to the server
 
 ```
-wp_deploy run
+python3 wp_deploy.py run
 ```
+
+## Create Standalone app
+run the below command
+```
+pyinstaller wp_deploy
+```
+Your app will be placed at *dist/wp_deploy* 
 
 ## Release History
 
