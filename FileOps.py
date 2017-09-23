@@ -1,8 +1,6 @@
 import json
-import zipfile
 import os
 from colorama import *
-import tarfile
 from tqdm import tqdm
 import ftplib
 import pysftp
@@ -95,35 +93,48 @@ class File:
         else:
             return 0
 
-    def archive_site_zip(self):
-        file_path = ""
-        compression = ""
-        root_dir = os.getcwd()
-        ignore_list = ["site.zip"]
-        zf = zipfile.ZipFile(ignore_list[0], mode='w')
 
-        try:
-            import zlib
-            compression = zipfile.ZIP_DEFLATED
-        except:
-            compression = zipfile.ZIP_STORED
+    def changewpconfig(self):
+        print("Changing wp-config file")
+        configfile = open("deploy-config.json", "r")
+        wpfile = open("wp-config.php", 'r')
 
-        print("Archiving the site...")
+        configs = json.loads(configfile.readlines()[0])
+        lines = wpfile.readlines()
+        wpfile.close()
+        for line in lines:
+            if line.startswith("define('DB_NAME'"):
+                lines[lines.index(line)] = "define('DB_NAME', '" + configs['db_name'] + "');\n"
+            elif line.startswith("define('DB_USER'"):
+                lines[lines.index(line)] = "define('DB_USER', '" + configs['remote_db_user'] + "');\n"
+            elif line.startswith("define('DB_PASSWORD'"):
+                lines[lines.index(line)] = "define('DB_PASSWORD', '" + configs['remote_db_password'] + "');\n"
 
-        for dirName, subdirList, fileList in os.walk(root_dir):
-            for fname in fileList:
-                if fname not in ignore_list:
-                    file_path = os.path.join(dirName, fname)
-                    zf.write(file_path, os.path.relpath(file_path), compression)
+        wpfile = open("wp-config.php", 'w')
+        wpfile.writelines(lines)
+        wpfile.close()
+        configfile.close()
 
-        zf.close()
+    def resetwpconfig(self):
+        print("Changing wp-config file")
+        configfile = open("deploy-config.json", "r")
+        wpfile = open("wp-config.php", 'r')
 
-    def archive_site_tar(self):
-        root_dir = os.getcwd()+"/"
-        with tarfile.open("site.tar.gz", "w:gz") as tar:
-            print("Archiving the site...")
-            tar.add(root_dir, arcname=os.path.basename(root_dir))
-            tar.close()
+        configs = json.loads(configfile.readlines()[0])
+        lines = wpfile.readlines()
+        wpfile.close()
+        for line in lines:
+            if line.startswith("define('DB_NAME'"):
+                lines[lines.index(line)] = "define('DB_NAME', '" + configs['db_name'] + "');\n"
+            elif line.startswith("define('DB_USER'"):
+                lines[lines.index(line)] = "define('DB_USER', '" + configs['db_user'] + "');\n"
+            elif line.startswith("define('DB_PASSWORD'"):
+                lines[lines.index(line)] = "define('DB_PASSWORD', '" + configs['db_password'] + "');\n"
+
+        wpfile = open("wp-config.php", 'w')
+        wpfile.writelines(lines)
+        wpfile.close()
+        configfile.close()
 
     def ftp_transfer(self, host, username, password, remote_dir_path):
         root_dir = os.getcwd()
@@ -165,7 +176,7 @@ class File:
         print("Transferring files to "+host)
         for dirName, subdirList, fileList in os.walk(root_dir):
             if os.path.isdir(os.path.relpath(dirName)):
-                exec_code = "mkdir "+remote_dir_path+"/"+os.path.relpath(dirName)
+                exec_code = "mkdir "+os.path.join(remote_dir_path, os.path.relpath(dirName)).replace("\\", "/")
                 stdin, stdout, stderr = ssh.exec_command(exec_code)
 
             for fname in fileList:
