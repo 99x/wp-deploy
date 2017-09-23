@@ -21,14 +21,15 @@ OR
 ```
 $ pip3 install -r requirements.txt
 ```
+2. Go to the directory which has the local wordpress site
 
-2. Create deploy-config.json file
+3. Create deploy-config.json file
 ```
 python3 wp_deploy.py init
 ```
 
 
-3. Create database backups and deploy to the server
+4. Create database backups and deploy to the server
 
 ```
 python3 wp_deploy.py run
