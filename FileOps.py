@@ -6,6 +6,7 @@ import tarfile
 from tqdm import tqdm
 import ftplib
 import pysftp
+import getpass
 import warnings
 warnings.filterwarnings("ignore")
 
@@ -42,19 +43,19 @@ class File:
         new_config['db_host'] = input("DB Host Name - Local(Old Value:'" + old_config['DB_HOST'] + "'): ")
         new_config['db_name'] = input("Local Database Name (Old Value:'" + old_config['DB_NAME'] + "'): ")
         new_config['db_user'] = input("Local DB User Name (Old Value:'" + old_config['DB_USER'] + "'): ")
-        new_config['db_password'] = input("Local DB Password (Old Value:'" + old_config['DB_PASSWORD'] + "'): ")
+        new_config['db_password'] = getpass.getpass("Local DB Password (Old Value:'" + old_config['DB_PASSWORD'] + "'): ")
         new_config['remote_db_host'] = input("Remote DB Host Name : ")
         new_config['remote_db_user'] = input("Remote DB User Name : ")
-        new_config['remote_db_password'] = input("Remote DB Password : ")
-        new_config['localhost_url'] = input("Localhost site URL (eg: localhost/site_name) : ")
-        new_config['site_url'] = input("Remote Site URL : ")
+        new_config['remote_db_password'] = getpass.getpass("Remote DB Password : ")
+        new_config['localhost_url'] = input("Localhost site URL (FORMAT: http://localhost/site_name) : ")
+        new_config['site_url'] = input("Remote Site URL (FORMAT: http://www.example.com) : ")
         new_config['sshhostname'] = input("Remote Server IP Address / URL : ")
         new_config['sshuser'] = input("Remote Server user name: ")
-        new_config['sshpassword'] = input("Remote Server password : ")
+        new_config['sshpassword'] = getpass.getpass("Remote Server password : ")
         new_config['ftphostname'] = input("FTP Host Name: ")
         new_config['ftp_user'] = input("FTP Username : ")
-        new_config['ftp_pass'] = input("FTP Password : ")
-        new_config['remote_dir_path'] = input("Remote Directory path to transfer files : ")
+        new_config['ftp_pass'] = getpass.getpass("FTP Password : ")
+        new_config['remote_dir_path'] = input("Remote Directory path to transfer files (FORMAT: /var/www/html/) :")
         new_config['table_prefix'] = old_config['TABLE_PREFIX']
         print(Style.RESET_ALL)
 
