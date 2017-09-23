@@ -51,6 +51,7 @@ class File:
         new_config['sshhostname'] = input("Remote Server IP Address / URL : ")
         new_config['sshuser'] = input("Remote Server user name: ")
         new_config['sshpassword'] = input("Remote Server password : ")
+        new_config['ftphostname'] = input("FTP Host Name: ")
         new_config['ftp_user'] = input("FTP Username : ")
         new_config['ftp_pass'] = input("FTP Password : ")
         new_config['remote_dir_path'] = input("Remote Directory path to transfer files : ")
@@ -67,7 +68,7 @@ class File:
                    'remote_db_user': "Remote DB User Name", 'remote_db_password': "Remote DB Password",
                    'localhost_url': "Localhost site URL (eg: localhost/site_name", 'site_url': "Remote Site URL",
                    'sshhostname': 'Remote Server IP Address / URL', 'sshuser': "Remote Server user name",
-                   'sshpassword': "Remote Server password", "ftp_user": "FTP User name",
+                   'sshpassword': "Remote Server password", "ftp_user": "FTP User name", 'ftphostname': "FTP Host Name",
                    "ftp_pass": "FTP Password", 'remote_dir_path': "Remote Directory path",
                    'table_prefix': "Table Prefix"}
         is_completed = 0
