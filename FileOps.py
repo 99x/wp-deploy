@@ -33,34 +33,35 @@ class File:
         file.close()
         return configs
 
-    def prompt_config(self):
+    def prompt_config(self,new_config={}):
         # Prompts user to enter new configurations info
         old_config = self.fetch_old_config()
-        new_config = {}
-        print("Please input the following details or press enter to keep old values...")
-        print(Style.BRIGHT)
-        new_config['db_host'] = input("DB Host Name - Local(Old Value:'" + old_config['DB_HOST'] + "'): ")
-        new_config['db_name'] = input("Local Database Name (Old Value:'" + old_config['DB_NAME'] + "'): ")
-        new_config['db_user'] = input("Local DB User Name (Old Value:'" + old_config['DB_USER'] + "'): ")
-        new_config['db_password'] = getpass.getpass("Local DB Password (Old Value:'" + old_config['DB_PASSWORD'] + "'): ")
-        new_config['remote_db_host'] = input("Remote DB Host Name : ")
-        new_config['remote_db_user'] = input("Remote DB User Name : ")
-        new_config['remote_db_password'] = getpass.getpass("Remote DB Password : ")
-        new_config['localhost_url'] = input("Localhost site URL (FORMAT: http://localhost/site_name) : ")
-        new_config['site_url'] = input("Remote Site URL (FORMAT: http://www.example.com) : ")
-        new_config['sshhostname'] = input("Remote Server IP Address / URL : ")
-        new_config['sshuser'] = input("Remote Server user name: ")
-        new_config['sshpassword'] = getpass.getpass("Remote Server password : ")
-        new_config['ftphostname'] = input("FTP Host Name: ")
-        new_config['ftp_user'] = input("FTP Username : ")
-        new_config['ftp_pass'] = getpass.getpass("FTP Password : ")
-        new_config['remote_dir_path'] = input("Remote Directory path to transfer files (FORMAT: /var/www/html/) :")
-        new_config['table_prefix'] = old_config['TABLE_PREFIX']
-        print(Style.RESET_ALL)
+        if new_config == {}:
+            new_config = {}
+            print("Please input the following details or press enter to keep old values...")
+            print(Style.BRIGHT)
+            new_config['db_host'] = input("DB Host Name - Local(Old Value:'" + old_config['DB_HOST'] + "'): ")
+            new_config['db_name'] = input("Local Database Name (Old Value:'" + old_config['DB_NAME'] + "'): ")
+            new_config['db_user'] = input("Local DB User Name (Old Value:'" + old_config['DB_USER'] + "'): ")
+            new_config['db_password'] = getpass.getpass("Local DB Password (Old Value:'" + old_config['DB_PASSWORD'] + "'): ")
+            new_config['remote_db_host'] = input("Remote DB Host Name : ")
+            new_config['remote_db_user'] = input("Remote DB User Name : ")
+            new_config['remote_db_password'] = getpass.getpass("Remote DB Password : ")
+            new_config['localhost_url'] = input("Localhost site URL (FORMAT: http://localhost/site_name) : ")
+            new_config['site_url'] = input("Remote Site URL (FORMAT: http://www.example.com) : ")
+            new_config['sshhostname'] = input("Remote Server IP Address / URL : ")
+            new_config['sshuser'] = input("Remote Server user name: ")
+            new_config['sshpassword'] = getpass.getpass("Remote Server password : ")
+            new_config['ftphostname'] = input("FTP Host Name: ")
+            new_config['ftp_user'] = input("FTP Username : ")
+            new_config['ftp_pass'] = getpass.getpass("FTP Password : ")
+            new_config['remote_dir_path'] = input("Remote Directory path to transfer files (FORMAT: /var/www/html/) :")
+            new_config['table_prefix'] = old_config['TABLE_PREFIX']
+            print(Style.RESET_ALL)
 
         return old_config, new_config
 
-    def create_config(self):
+    def create_config(self, new_config={}):
         # Creates deploy-config.json file to use in deployment stage
         # Returns 1 if config created successfully ELSE 0
         strings = {'db_host': 'Local Host Name', 'db_name': "Database Name", 'db_user': "Database User Name",
@@ -72,18 +73,22 @@ class File:
                    "ftp_pass": "FTP Password", 'remote_dir_path': "Remote Directory path",
                    'table_prefix': "Table Prefix"}
         is_completed = 0
-        old_config, new_config = self.prompt_config()
-        for key, value in new_config.items():
-            if value == "":
-                try:
-                    new_config[key] = old_config[key.upper()]  # getting values from old configs
-                    is_completed = 1
-                except:
-                    print(Fore.RED + Back.WHITE + "\n" + strings[
-                        key] + " is missing to continue the process. Please re-enter them\n" + Fore.RESET + Back.RESET)
+        old_config={}
+        if old_config == self.fetch_old_config() and new_config == {}:
+            old_config, new_config = self.prompt_config()
+            for key, value in new_config.items():
+                if value == "":
+                    try:
+                        new_config[key] = old_config[key.upper()]  # getting values from old configs
+                        is_completed = 1
+                    except:
+                        print(Fore.RED + Back.WHITE + "\n" + strings[
+                            key] + " is missing to continue the process. Please re-enter them\n" + Fore.RESET + Back.RESET)
 
-                    is_completed = 0
-                    break
+                        is_completed = 0
+                        break
+        else:
+            is_completed = 1
         if is_completed:
             file = open("deploy-config.json", "w")
             file.write(json.dumps(new_config))
